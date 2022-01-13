@@ -1,0 +1,106 @@
+class Programs:
+    def __init__(self, name, year):
+        self._name = name.title()
+        self.year = year
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, new_name):
+        self._name = new_name
+
+    def __str__(self):
+        return f'Name: {self.name} - {self.year} '
+
+
+class Movies(Programs):
+    def __init__(self, name, year, duration):
+        super().__init__(name, year)
+        self.duration = duration
+
+    def __str__(self):
+        return f'Name: {self.name} - {self.year} - {self.duration} min'
+
+
+class Series(Programs):
+    def __init__(self, name, year, season):
+        super().__init__(name, year)
+        self.season = season
+
+    def __str__(self):
+        return f'Name: {self.name} - {self.year}  - {self.season} Seasons'
+
+
+class Playlist:
+    def __init__(self, name, all_programs):
+        self.name = name.title()
+        self._programs = all_programs
+
+    def __getitem__(self, item):
+        return self._programs[item]
+
+    @property
+    def listing(self):
+        return self._programs
+
+    def __len__(self):
+        return len(self._programs)
+
+
+class Main:
+    movies_and_series = []
+    phases = {'phase_enter': 'Welcome! Do you want to save a Movie(1) or Serie(2), choice one and report he number: ',
+              'name': 'Enter with name: ', 'year': 'Enter release Year of: ',
+              '2': 'Enter with quantity of season: ',
+              '1': 'Enter with duration time: '}
+
+    @classmethod
+    def enter_data(cls, text):
+        input_data = input(text)
+        return input_data
+
+    @classmethod
+    def validate_data_input(cls, value):
+        if value == '1':
+            return value
+        elif value == '2':
+            return value
+        else:
+            print('Please enter a 1 or 2')
+            return False
+
+    @classmethod
+    def save_program(cls, name, duration, year, choice):
+        programs = {'1': Movies, '2': Series}
+        program = programs[choice]
+        program = program(name, duration, year)
+        return program
+
+    @classmethod
+    def create_list(cls, value):
+        Main.movies_and_series.append(value)
+        weekend_playlist = Playlist('weekend playlist', Main.movies_and_series)
+        return weekend_playlist
+
+    @classmethod
+    def show_play_list(cls, value):
+        for programs in value:
+            print(programs)
+
+    @classmethod
+    def menu(cls):
+        while True:
+            choice = cls.validate_data_input(cls.enter_data(Main.phases['phase_enter']))
+            if choice:
+                name = cls.enter_data(Main.phases['name'])
+                year = cls.enter_data(Main.phases['year'])
+                duration = cls.enter_data(Main.phases[choice])
+                program = cls.save_program(name, year, duration, choice)
+                play_list = cls.create_list(program)
+                cls.show_play_list(play_list)
+
+
+if __name__ == '__main__':
+    Main.menu()
